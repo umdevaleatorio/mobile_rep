@@ -98,7 +98,9 @@ As tarefas estão organizadas por **entregas da disciplina**, alinhadas com o cr
   - Criar client.ts
 
 - [ ] **T3.2** Criar tabelas no Supabase
-  - users, categories, products, orders, order_items, competitors, store_settings
+  - users, categories, products, orders, order_items, order_messages, competitors, store_settings
+  - Row Level Security (RLS) policies
+  - Roles: client vs admin
   - Row Level Security (RLS) policies
   - Roles: client vs admin
 
@@ -118,7 +120,8 @@ As tarefas estão organizadas por **entregas da disciplina**, alinhadas com o cr
 - [ ] **T3.5** Implementar repositories Supabase
   - SupabaseProductRepo: CRUD completo + ativar/desativar
   - SupabaseUserRepo: perfil, atualização
-  - SupabaseOrderRepo: criar pedido, listar, atualizar status, cancelar
+  - SupabaseOrderRepo: criar pedido, listar, atualizar status, cancelar, transição automática confirmed→preparing
+  - SupabaseOrderMessageRepo: criar e listar mensagens de pedido
   - SupabaseCompetitorRepo: CRUD concorrentes
   - SupabaseStoreSettingsRepo: configurações da loja
 
@@ -137,12 +140,16 @@ As tarefas estão organizadas por **entregas da disciplina**, alinhadas com o cr
     - Dinheiro: mensagem de pagamento na entrega
     - Cartão: mensagem de pagamento na maquininha
   - OrderHistoryScreen: pedidos do cliente com status
+  - OrderTrackingScreen: acompanhar pedido com timeline (confirmado→preparando→saiu→entregue), detalhes dos produtos com imagem/preço/quantidade, mensagens da loja
   - ProfileScreen: dados pessoais, editar perfil
   - SettingsScreen: tema, endereço padrão, notificações, logout
 
 - [ ] **T3.8** Telas do Admin (funcionais)
   - AdminHomeScreen: menu inicial do admin
-  - OrdersScreen: lista de pedidos + atualizar status + filtro
+  - OrdersScreen: lista de pedidos + atualizar status + filtro + campos de mensagem (motivo + corpo)
+    - Status auto: confirmed → preparing (automático)
+    - Status manual: preparing → delivering (mensagem opcional) → completed
+    - Cancelamento: mensagem com motivo obrigatório
   - SalesDashboardScreen: métricas (vendas do dia, ticket médio, pedidos pendentes, gráficos)
   - SalesHistoryScreen: histórico com filtro dia/semana/mês + filtro por forma de pagamento
   - ManageProductsScreen: lista + cadastrar/editar/desativar/reativar/excluir

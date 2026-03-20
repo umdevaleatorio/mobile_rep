@@ -97,6 +97,7 @@ src/
 │   │   │   ├── PaymentScreen.tsx        # Pagamento e Frete
 │   │   │   ├── PaymentConfirmScreen.tsx # Confirmação (QR Code PIX se aplicável)
 │   │   │   ├── OrderHistoryScreen.tsx   # Histórico de Pedidos do cliente
+│   │   │   ├── OrderTrackingScreen.tsx  # Acompanhar Pedido (timeline + detalhes)
 │   │   │   ├── MapScreen.tsx            # Mapa/Geolocalização
 │   │   │   ├── ProfileScreen.tsx        # Perfil do Usuário
 │   │   │   └── SettingsScreen.tsx       # Configurações do cliente
@@ -189,7 +190,7 @@ src/
 |-------|------|-----------|
 | id | string (UUID) | Identificador |
 | userId | string | FK para User |
-| status | "pending" \| "confirmed" \| "delivering" \| "completed" \| "cancelled" | Status |
+| status | "pending" \| "confirmed" \| "preparing" \| "delivering" \| "completed" \| "cancelled" | Status |
 | total | Price (VO) | Valor total |
 | deliveryType | "local" \| "pickup" \| "mercado_livre" | Tipo de entrega |
 | paymentMethod | "pix" \| "dinheiro" \| "cartao_credito" \| "cartao_debito" | Forma de pagamento |
@@ -218,6 +219,16 @@ src/
 | coordinates | Coordinates (VO) | Lat/Lng |
 | phone | string? | Telefone |
 
+### OrderMessage
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| id | string (UUID) | Identificador |
+| orderId | string | FK para Order |
+| status | string | Status no momento da mensagem |
+| reason | string | Motivo (ex: "Atraso na entrega", "Pagamento cancelado") |
+| message | string | Corpo da mensagem ao cliente |
+| createdAt | Date | Data/hora do envio |
+
 ### StoreSettings
 | Campo | Tipo | Descrição |
 |-------|------|-----------|
@@ -238,6 +249,7 @@ categories (id, name, type)
 products (id, name, description, price, image_url, category_id, stock, mercado_livre_url, active)
 orders (id, user_id, status, total, delivery_type, payment_method, delivery_address, lat, lng, pix_payload, needs_change, created_at, updated_at)
 order_items (id, order_id, product_id, quantity, unit_price)
+order_messages (id, order_id, status, reason, message, created_at)
 competitors (id, name, address, lat, lng, phone)
 store_settings (id, delivery_radius_km, opening_time, closing_time, pix_key, pix_receiver_name, pix_receiver_city)
 ```
@@ -283,6 +295,7 @@ App Start
             │    ├── 🗺️ Mapa (loja, concorrentes, acompanhar entrega)
             │    └── 👤 Perfil
             │          ├── OrderHistoryScreen (Histórico de Pedidos)
+            │          │     └── OrderTrackingScreen (Acompanhar Pedido — timeline + detalhes)
             │          └── SettingsScreen (Configurações)
             │                ├── Tema claro/escuro
             │                ├── Endereço padrão

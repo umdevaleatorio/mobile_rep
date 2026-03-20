@@ -16,7 +16,7 @@ O app também inclui um **painel administrativo** integrado (mesmo APK, acesso p
 
 ### Incluído
 
-**Telas do Cliente (11 telas):**
+**Telas do Cliente (13 telas):**
 - Tela de Splash (logo + verificação de sessão)
 - Tela de cadastro
 - Tela de login (cliente)
@@ -25,6 +25,8 @@ O app também inclui um **painel administrativo** integrado (mesmo APK, acesso p
 - Carrinho (persistido no SQLite)
 - Tela de Pagamento e Frete (PIX, Dinheiro, Cartão)
 - Tela de Confirmação do Pagamento (QR Code PIX + Copia e Cola quando PIX)
+- Acompanhar Pedido (timeline de status + detalhes com produtos/preços + mensagens da loja)
+- Histórico de Pedidos
 - Mapa/Geolocalização (loja, concorrentes, acompanhar entregas)
 - Perfil do Usuário (com histórico de pedidos)
 - Configurações (tema claro/escuro, endereço padrão, notificações)

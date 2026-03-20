@@ -32,27 +32,41 @@
 
 ### Cenário: Filtrar pedidos por status
 - **Dado** que o admin está na tela de pedidos
-- **Quando** ele selecionar um filtro de status (Pendente, Confirmado, Em Entrega, Concluído, Cancelado)
+- **Quando** ele selecionar um filtro de status (Em Preparação, Saiu para Entrega, Concluído, Cancelado)
 - **Então** o sistema **MUST** exibir somente os pedidos com o status selecionado
 
-### Cenário: Atualizar status do pedido
-- **Dado** que o admin está visualizando um pedido
-- **Quando** ele alterar o status (pending → confirmed → delivering → completed)
-- **Então** o sistema **MUST** atualizar o status no Supabase
-- **E** **MUST** registrar a data/hora da alteração
-- **E** **MUST NOT** permitir retroceder o status (ex: de "completed" para "pending")
+### Cenário: Fluxo de status do pedido
+- **Dado** que um pedido é criado com pagamento confirmado
+- **Quando** o pagamento for aprovado
+- **Então** o sistema **MUST** automaticamente definir o status para "confirmed" e em seguida "preparing" (em preparação)
+- **E** a partir daí, o admin atualiza manualmente:
+  - `preparing` → `delivering` (saiu para entrega) — manual, com mensagem **opcional**
+  - `delivering` → `completed` (entregue) — manual
+  - Qualquer status → `cancelled` (cancelado) — manual, com mensagem **obrigatória**
+- **E** **MUST** registrar a data/hora de cada alteração de status
+- **E** **MUST NOT** permitir retroceder o status
 
-### Cenário: Cancelar pedido
-- **Dado** que o pedido está com status "pending" ou "confirmed"
-- **Quando** o admin cancelar o pedido
-- **Então** o sistema **MUST** alterar o status para "cancelled"
-- **E** **MUST** solicitar confirmação antes de cancelar
+### Cenário: Marcar como "Saiu para entrega" com mensagem opcional
+- **Dado** que o pedido está com status "preparing"
+- **Quando** o admin alterar para "delivering"
+- **Então** o sistema **MUST** exibir campos **opcionais** de Motivo e Mensagem ao cliente
+- **E** se preenchidos, **MUST** salvar a mensagem vinculada ao pedido
+- **E** **SHOULD** notificar o cliente sobre a mudança de status
+
+> Veja spec completa do sistema de mensagens em `specs/acompanhamento-pedido/spec.md`
+
+### Cenário: Cancelar pedido com mensagem obrigatória
+- **Dado** que o admin está cancelando um pedido
+- **Quando** ele alterar o status para "cancelled"
+- **Então** o sistema **MUST** exigir preenchimento de **Motivo** e **Mensagem** (obrigatórios)
+- **E** **MUST NOT** permitir cancelar sem preencher
+- **E** **MUST** solicitar confirmação antes de efetivar
 - **E** **SHOULD** restaurar o estoque dos produtos do pedido
 
 ### Cenário: Ver detalhes do pedido
 - **Dado** que o admin está na lista de pedidos
 - **Quando** ele tocar em um pedido
-- **Então** o sistema **MUST** exibir os detalhes completos: itens, quantidades, subtotais, valor total, endereço de entrega, forma de pagamento e status
+- **Então** o sistema **MUST** exibir os detalhes completos: itens com imagens, quantidades, subtotais, valor total, endereço de entrega, forma de pagamento, status e mensagens enviadas
 
 ---
 
