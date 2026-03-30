@@ -6,16 +6,14 @@ As tarefas estão organizadas por **entregas da disciplina**, alinhadas com o cr
 
 ## Entrega 1 — Estrutura, Navegação e Telas Base (até 24/mar)
 
-- [ ] **T1.1** Inicializar projeto Expo com TypeScript
-  - `npx create-expo-app agropet-app --template blank-typescript`
-  - Configurar ESLint, Prettier
+- [ ] **T1.1** Inicializar os dois projetos Expo com TypeScript
+  - `npx create-expo-app agropet-cliente --template blank-typescript`
+  - `npx create-expo-app agropet-admin --template blank-typescript`
+  - Configurar ESLint e Prettier para ambos
 
-- [ ] **T1.2** Criar estrutura de pastas (Clean Architecture / DDD)
-  - `src/domain/entities/`, `src/domain/value-objects/`, `src/domain/use-cases/`
-  - `src/data/repositories/`, `src/data/datasources/`
-  - `src/presentation/screens/`, `src/presentation/components/`, `src/presentation/navigation/`
-  - `src/presentation/contexts/`, `src/presentation/theme/`
-  - `src/utils/`
+- [ ] **T1.2** Criar estrutura de pastas (Clean Architecture) duplicada ou compartilhada
+  - **No `agropet-cliente`**: `src/domain/`, `src/data/`, `src/presentation/` (somente telas de cliente), `src/utils/`
+  - **No `agropet-admin`**: `src/domain/`, `src/data/`, `src/presentation/` (somente telas de admin), `src/utils/`
 
 - [ ] **T1.3** Implementar entidades do domínio
   - User, Product, Category, CartItem, Order, OrderItem, Competitor, StoreSettings
@@ -24,30 +22,30 @@ As tarefas estão organizadas por **entregas da disciplina**, alinhadas com o cr
   - Email, Price, Coordinates, DeliveryRadius, PaymentMethod
 
 - [ ] **T1.5** Criar esqueleto dos use cases (interfaces)
-  - Auth: Login, Register, BiometricAuth, CheckSession
+  - Auth: Login, Register, CheckSession
   - Products: List, Get, Create, Update, Delete, Activate, Deactivate
   - Cart: Add, Remove, Update, Get, Clear
   - Orders: Create, List, ListClientOrders, UpdateStatus, Cancel
-  - Sales: GetDashboard, GetSalesHistory
+  - Sales: GetSalesHistory
   - Location: GetUserLocation, CheckDeliveryRadius
   - Settings: GetTheme, SetTheme, UpdateStoreSettings
 
-- [ ] **T1.6** Configurar React Navigation
-  - Instalar dependências: `@react-navigation/native`, `@react-navigation/stack`, `@react-navigation/bottom-tabs`, `@react-navigation/drawer`
-  - Criar AppNavigator (root) → SplashScreen primeiro
-  - Criar AuthStack (ClientLoginScreen, AdminLoginScreen, RegisterScreen — telas separadas)
-  - Criar ClientTabs (Home/Catálogo, Carrinho, Mapa, Perfil)
-  - Criar AdminDrawer (Pedidos, Painel de Vendas, Histórico/Caixa, Produtos, Mapa, Perfil, Configurações)
-  - Criar CheckoutStack (PaymentScreen → PaymentConfirmScreen)
-  - Criar SettingsStack
+- [ ] **T1.6** Configurar React Navigation nas duas aplicações
+  - **AgroPet Cliente:**
+    - AppNavigator (root) → SplashScreen
+    - AuthStack (ClientLoginScreen, RegisterScreen)
+    - ClientTabs (Home/Catálogo, Carrinho, Mapa, Perfil)
+    - CheckoutStack (PaymentScreen → PaymentConfirmScreen)
+  - **AgroPet Admin:**
+    - AppNavigator (root)
+    - AuthStack (AdminLoginScreen)
+    - AdminDrawer (Menu Inicial Hub, Pedidos, Histórico, Produtos, Mapa, Perfil, Configurações)
 
-- [ ] **T1.7** Criar todas as telas placeholder (23 telas)
-  - **Splash**: SplashScreen
-  - **Auth**: ClientLoginScreen, AdminLoginScreen, RegisterScreen
-  - **Cliente**: HomeScreen, ProductDetailScreen, CartScreen, PaymentScreen, PaymentConfirmScreen, OrderHistoryScreen, MapScreen, ProfileScreen, SettingsScreen
-  - **Admin**: AdminHomeScreen, OrdersScreen, SalesDashboardScreen, SalesHistoryScreen, ManageProductsScreen, ProductFormScreen, AdminMapScreen, AdminProfileScreen, AdminSettingsScreen, OfflineModeScreen, ManageCategoriesScreen
+- [ ] **T1.7** Criar telas placeholder distribuídas
+  - **No Cliente (13):** Splash, ClientLoginScreen, RegisterScreen, HomeScreen, ProductDetailScreen, CartScreen, PaymentScreen, PaymentConfirmScreen, OrderHistoryScreen, OrderTrackingScreen, MapScreen, ProfileScreen, SettingsScreen
+  - **No Admin (10):** AdminLoginScreen, AdminHomeScreen (Hub), OrdersScreen, SalesHistoryScreen, ManageProductsScreen, ProductCreateScreen, ProductEditScreen, AdminMapScreen, AdminProfileScreen, AdminSettingsScreen
   - Todas com componente básico + título
-  - Navegação funcional entre todas
+  - Navegação funcional em ambos os apps
 
 - [ ] **T1.8** Configurar sistema de tema claro/escuro
   - Criar `lightTheme.ts` e `darkTheme.ts`
@@ -57,13 +55,7 @@ As tarefas estão organizadas por **entregas da disciplina**, alinhadas com o cr
 
 ---
 
-## Entrega 2 — Câmera, Mapas e Geolocalização (até 24/abr)
-
-- [ ] **T2.1** Câmera — Leitor de QR Code
-  - Instalar expo-camera
-  - Tela de leitura QR para pagamento PIX (cliente)
-  - Permissões de câmera
-  - Opção de importar QR Code da galeria
+## Entrega 2 — Mapas e Geolocalização (até 24/abr)
 
 - [ ] **T2.2** Geolocalização
   - Instalar expo-location
@@ -82,11 +74,6 @@ As tarefas estão organizadas por **entregas da disciplina**, alinhadas com o cr
   - Exibição de entregas em andamento com marcadores
   - CRUD de concorrentes (cadastrar, editar, excluir)
 
-- [ ] **T2.5** Biometria do Admin
-  - Instalar expo-local-authentication
-  - Verificação biométrica obrigatória no login admin
-  - Fallback para PIN/senha se biometria não disponível
-
 ---
 
 ## Entrega 3 — Supabase, Auth, Backend e Telas Funcionais (até 22/mai)
@@ -104,13 +91,11 @@ As tarefas estão organizadas por **entregas da disciplina**, alinhadas com o cr
   - Row Level Security (RLS) policies
   - Roles: client vs admin
 
-- [ ] **T3.3** Autenticação — Login separado
-  - ClientLoginScreen: login para clientes via Supabase Auth
-  - AdminLoginScreen: login para admin + biometria via expo-local-authentication
-  - RegisterScreen: cadastro com todos os campos
-  - AuthContext com estado global
-  - expo-secure-store para tokens
-  - CheckSessionUseCase para SplashScreen (verificar sessão e redirecionar)
+- [ ] **T3.3** Autenticação Dividida (Supabase)
+  - **No Cliente:** Login e Cadastro via Supabase Auth. Sem rota para admin.
+  - **No Admin:** Apenas Login via Supabase Auth (simples, sem biometria). Restrito para role='admin'.
+  - AuthContext com estado global isolado em cada app.
+  - expo-secure-store configurado nos dois lados.
 
 - [ ] **T3.4** Storage — Imagens de produtos
   - Bucket no Supabase Storage
@@ -136,33 +121,24 @@ As tarefas estão organizadas por **entregas da disciplina**, alinhadas com o cr
   - CartScreen: itens, quantidades, valor total (persistido SQLite)
   - PaymentScreen: seleção de forma de pagamento (PIX/Dinheiro/Cartão) + frete + endereço
   - PaymentConfirmScreen: confirmação do pedido
-    - PIX: QR Code + Código Copia e Cola + botão copiar
-    - Dinheiro: mensagem de pagamento na entrega
-    - Cartão: mensagem de pagamento na maquininha
+    - Exibe mensagem de sucesso e instruções de realizar o pagamento escolhido na entrega.
   - OrderHistoryScreen: pedidos do cliente com status
   - OrderTrackingScreen: acompanhar pedido com timeline (confirmado→preparando→saiu→entregue), detalhes dos produtos com imagem/preço/quantidade, mensagens da loja
   - ProfileScreen: dados pessoais, editar perfil
   - SettingsScreen: tema, endereço padrão, notificações, logout
 
 - [ ] **T3.8** Telas do Admin (funcionais)
-  - AdminHomeScreen: menu inicial do admin
+  - AdminHomeScreen: hub de navegação simples para outras telas do admin (sem dashboard)
   - OrdersScreen: lista de pedidos + atualizar status + filtro + campos de mensagem (motivo + corpo)
     - Status auto: confirmed → preparing (automático)
     - Status manual: preparing → delivering (mensagem opcional) → completed
     - Cancelamento: mensagem com motivo obrigatório
-  - SalesDashboardScreen: métricas (vendas do dia, ticket médio, pedidos pendentes, gráficos)
-  - SalesHistoryScreen: histórico com filtro dia/semana/mês + filtro por forma de pagamento
-  - ManageProductsScreen: lista + cadastrar/editar/desativar/reativar/excluir
-  - ProductFormScreen: formulário de produto
+  - SalesHistoryScreen: histórico de pedidos concluídos
+  - ManageProductsScreen: lista todos os produtos para gerenciamento
+  - ProductCreateScreen: formulário para adicionar novo produto
+  - ProductEditScreen: formulário para editar produto existente
   - AdminProfileScreen: dados pessoais, editar
-  - AdminSettingsScreen: tema, chave PIX, raio entrega, horário, categorias, logout
-  - ManageCategoriesScreen: CRUD categorias
-
-- [ ] **T3.9** Geração do PIX
-  - pixGenerator.ts: gerar payload EMV/BRCode
-  - Usar chave PIX das StoreSettings
-  - Componente PixQRCode.tsx: QR Code + código Copia e Cola
-  - Componente PaymentMethodSelector.tsx: seletor de método
+  - AdminSettingsScreen: tema, raio entrega, horário, logout
 
 ---
 
@@ -185,11 +161,9 @@ As tarefas estão organizadas por **entregas da disciplina**, alinhadas com o cr
   - Cache de imagens dos produtos localmente
   - Salvar endereço do usuário no SQLite
 
-- [ ] **T4.4** Modo Offline do Admin
-  - OfflineModeScreen: status de conexão, última sincronização, operações pendentes
-  - Botão "Forçar Sincronização"
-  - Consulta offline de produtos e pedidos (somente leitura)
-  - Dashboard offline com métricas em cache
+- [ ] **T4.4** Comportamento Offline Automático
+  - Acesso transparente ao SQLite (apenas leitura de cache quando sem conexão)
+  - Não há "Tela" administrativa para forçar o Offline (funciona via status da rede em background)
 
 - [ ] **T4.5** Indicador global de conectividade
   - OfflineBanner.tsx: banner persistente em todas as telas quando offline

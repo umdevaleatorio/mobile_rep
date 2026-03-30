@@ -5,139 +5,33 @@
 O projeto segue **Clean Architecture** com **DDD (Domain-Driven Design)** conforme requisito da disciplina.
 
 ```
-src/
-├── domain/                    # Camada de domínio (entities + use cases)
-│   ├── entities/
-│   │   ├── User.ts
-│   │   ├── Product.ts
-│   │   ├── Category.ts
-│   │   ├── CartItem.ts
-│   │   ├── Order.ts
-│   │   ├── OrderItem.ts
-│   │   ├── Competitor.ts
-│   │   └── StoreSettings.ts
-│   ├── value-objects/
-│   │   ├── Email.ts
-│   │   ├── Price.ts
-│   │   ├── Coordinates.ts
-│   │   ├── DeliveryRadius.ts
-│   │   └── PaymentMethod.ts
-│   └── use-cases/
-│       ├── auth/
-│       │   ├── LoginUseCase.ts
-│       │   ├── RegisterUseCase.ts
-│       │   ├── BiometricAuthUseCase.ts
-│       │   └── CheckSessionUseCase.ts
-│       ├── products/
-│       │   ├── ListProductsUseCase.ts
-│       │   ├── GetProductUseCase.ts
-│       │   ├── CreateProductUseCase.ts  (admin)
-│       │   ├── UpdateProductUseCase.ts  (admin)
-│       │   ├── DeleteProductUseCase.ts  (admin)
-│       │   ├── ActivateProductUseCase.ts  (admin)
-│       │   └── DeactivateProductUseCase.ts  (admin)
-│       ├── cart/
-│       │   ├── AddToCartUseCase.ts
-│       │   ├── RemoveFromCartUseCase.ts
-│       │   ├── UpdateCartItemUseCase.ts
-│       │   ├── GetCartUseCase.ts
-│       │   └── ClearCartUseCase.ts
-│       ├── orders/
-│       │   ├── CreateOrderUseCase.ts
-│       │   ├── ListOrdersUseCase.ts
-│       │   ├── ListClientOrdersUseCase.ts
-│       │   ├── UpdateOrderStatusUseCase.ts  (admin)
-│       │   └── CancelOrderUseCase.ts  (admin)
-│       ├── sales/
-│       │   ├── GetDashboardUseCase.ts   (admin)
-│       │   └── GetSalesHistoryUseCase.ts (admin)
-│       ├── location/
-│       │   ├── GetUserLocationUseCase.ts
-│       │   └── CheckDeliveryRadiusUseCase.ts
-│       └── settings/
-│           ├── GetThemeUseCase.ts
-│           ├── SetThemeUseCase.ts
-│           └── UpdateStoreSettingsUseCase.ts (admin)
+mobile-rep/
+├── agropet-cliente/
+│   ├── src/
+│   │   ├── domain/ ... (Entities, Client UseCases)
+│   │   ├── data/ ... (Supabase/SQLite repos)
+│   │   ├── presentation/
+│   │   │   ├── navigation/
+│   │   │   │   ├── AppNavigator.tsx       # Root navigator (Splash → Auth ou Main)
+│   │   │   │   ├── AuthStack.tsx          # ClientLoginScreen, RegisterScreen
+│   │   │   │   ├── ClientTabs.tsx         # Bottom tabs (cliente)
+│   │   │   │   └── CheckoutStack.tsx      # Pagamento → Confirmação
+│   │   │   ├── screens/ ... (Telas do cliente 1 a 13)
+│   │   │   └── components/ ... (Componentes do cliente)
+│   │   └── utils/ ...
 │
-├── data/                      # Camada de dados
-│   ├── repositories/
-│   │   ├── SupabaseProductRepo.ts
-│   │   ├── SupabaseUserRepo.ts
-│   │   ├── SupabaseOrderRepo.ts
-│   │   ├── SupabaseCompetitorRepo.ts
-│   │   ├── SupabaseStoreSettingsRepo.ts
-│   │   ├── SQLiteProductRepo.ts   (cache offline)
-│   │   ├── SQLiteOrderRepo.ts     (cache offline)
-│   │   └── SQLiteCartRepo.ts      (carrinho persistido)
-│   └── datasources/
-│       ├── supabase/
-│       │   └── client.ts
-│       └── sqlite/
-│           └── database.ts
-│
-├── presentation/              # Camada de apresentação
-│   ├── navigation/
-│   │   ├── AppNavigator.tsx       # Root navigator (Splash → Auth ou Main)
-│   │   ├── AuthStack.tsx          # Login Cliente, Login Admin, Register
-│   │   ├── ClientTabs.tsx         # Bottom tabs (cliente)
-│   │   ├── AdminDrawer.tsx        # Drawer (admin)
-│   │   ├── ProductStack.tsx       # Detalhes produto
-│   │   ├── CheckoutStack.tsx      # Pagamento → Confirmação
-│   │   └── SettingsStack.tsx      # Configurações
-│   ├── screens/
-│   │   ├── SplashScreen.tsx
-│   │   ├── auth/
-│   │   │   ├── ClientLoginScreen.tsx
-│   │   │   ├── AdminLoginScreen.tsx
-│   │   │   └── RegisterScreen.tsx
-│   │   ├── client/
-│   │   │   ├── HomeScreen.tsx           # Menu Inicial / Catálogo
-│   │   │   ├── ProductDetailScreen.tsx  # Detalhes do Produto
-│   │   │   ├── CartScreen.tsx           # Carrinho
-│   │   │   ├── PaymentScreen.tsx        # Pagamento e Frete
-│   │   │   ├── PaymentConfirmScreen.tsx # Confirmação (QR Code PIX se aplicável)
-│   │   │   ├── OrderHistoryScreen.tsx   # Histórico de Pedidos do cliente
-│   │   │   ├── OrderTrackingScreen.tsx  # Acompanhar Pedido (timeline + detalhes)
-│   │   │   ├── MapScreen.tsx            # Mapa/Geolocalização
-│   │   │   ├── ProfileScreen.tsx        # Perfil do Usuário
-│   │   │   └── SettingsScreen.tsx       # Configurações do cliente
-│   │   └── admin/
-│   │       ├── AdminHomeScreen.tsx        # Menu Inicial (Admin)
-│   │       ├── OrdersScreen.tsx           # Tela de Pedidos
-│   │       ├── SalesDashboardScreen.tsx   # Painel de Vendas (Dashboard)
-│   │       ├── SalesHistoryScreen.tsx     # Histórico de Vendas / Caixa
-│   │       ├── ManageProductsScreen.tsx   # Registrar/Remover/Desativar Produto
-│   │       ├── ProductFormScreen.tsx      # Formulário de produto (novo/editar)
-│   │       ├── AdminMapScreen.tsx         # Mapa/Geolocalização (Admin)
-│   │       ├── AdminProfileScreen.tsx     # Perfil (Admin)
-│   │       ├── AdminSettingsScreen.tsx    # Configurações (Admin)
-│   │       ├── OfflineModeScreen.tsx      # Modo Offline (Admin)
-│   │       └── ManageCategoriesScreen.tsx # Gerenciar Categorias
-│   ├── components/
-│   │   ├── ProductCard.tsx
-│   │   ├── CartItemRow.tsx
-│   │   ├── CategoryFilter.tsx
-│   │   ├── PixQRCode.tsx          # QR Code + Código Copia e Cola
-│   │   ├── PaymentMethodSelector.tsx  # Seletor PIX / Dinheiro / Cartão
-│   │   ├── ScanFromGallery.tsx
-│   │   ├── MapMarker.tsx
-│   │   ├── OrderStatusBadge.tsx
-│   │   ├── SalesChart.tsx         # Gráfico para Dashboard
-│   │   ├── ThemeToggle.tsx        # Toggle claro/escuro
-│   │   └── OfflineBanner.tsx      # Banner indicador de modo offline
-│   ├── contexts/
-│   │   ├── AuthContext.tsx
-│   │   ├── CartContext.tsx
-│   │   └── ThemeContext.tsx
-│   └── theme/
-│       ├── lightTheme.ts
-│       └── darkTheme.ts
-│
-└── utils/
-    ├── pixGenerator.ts        # Geração do payload PIX EMV
-    ├── locationHelper.ts      # Verificação raio 17km
-    ├── syncManager.ts         # Gerenciador de sincronização offline
-    └── constants.ts           # Coordenadas Lambari, raio, etc.
+├── agropet-admin/
+│   ├── src/
+│   │   ├── domain/ ... (Entities, Admin UseCases)
+│   │   ├── data/ ... (Supabase/SQLite repos)
+│   │   ├── presentation/
+│   │   │   ├── navigation/
+│   │   │   │   ├── AppNavigator.tsx       # Root navigator
+│   │   │   │   ├── AuthStack.tsx          # AdminLoginScreen
+│   │   │   │   └── AdminDrawer.tsx        # Drawer (admin)
+│   │   │   ├── screens/ ... (Telas do Admin 1 a 10)
+│   │   │   └── components/ ... (Componentes do Admin)
+│   │   └── utils/ ...
 ```
 
 ## Entidades do Domínio
@@ -196,7 +90,6 @@ src/
 | paymentMethod | "pix" \| "dinheiro" \| "cartao_credito" \| "cartao_debito" | Forma de pagamento |
 | deliveryAddress | string? | Endereço de entrega |
 | coordinates | Coordinates? | Coordenadas da entrega |
-| pixPayload | string? | Payload EMV do PIX (quando PIX) |
 | needsChange | string? | "Troco para quanto?" (quando dinheiro) |
 | createdAt | Date | Data do pedido |
 | updatedAt | Date | Data da última atualização de status |
@@ -236,9 +129,6 @@ src/
 | deliveryRadiusKm | number | Raio de entrega (padrão 17km) |
 | openingTime | string | Horário de abertura |
 | closingTime | string | Horário de fechamento |
-| pixKey | string | Chave PIX |
-| pixReceiverName | string | Nome do recebedor |
-| pixReceiverCity | string | Cidade do recebedor |
 
 ## Banco de Dados (Supabase)
 
@@ -247,11 +137,11 @@ src/
 users (id, name, email, phone, address, city, cep, lat, lng, role)
 categories (id, name, type)
 products (id, name, description, price, image_url, category_id, stock, mercado_livre_url, active)
-orders (id, user_id, status, total, delivery_type, payment_method, delivery_address, lat, lng, pix_payload, needs_change, created_at, updated_at)
+orders (id, user_id, status, total, delivery_type, payment_method, delivery_address, lat, lng, needs_change, created_at, updated_at)
 order_items (id, order_id, product_id, quantity, unit_price)
 order_messages (id, order_id, status, reason, message, created_at)
 competitors (id, name, address, lat, lng, phone)
-store_settings (id, delivery_radius_km, opening_time, closing_time, pix_key, pix_receiver_name, pix_receiver_city)
+store_settings (id, delivery_radius_km, opening_time, closing_time)
 ```
 
 ## Banco Local (SQLite)
@@ -265,57 +155,59 @@ user_preferences (key, value)  -- tema, endereço padrão, etc.
 sync_queue (id, operation, table_name, data_json, created_at)  -- fila offline
 ```
 
-## Fluxo de Navegação
+## Fluxo de Navegação (Dois Aplicativos Separados)
 
-```
+### APP 1: AgroPet Cliente
+```text
 App Start
   │
   └─▶ SplashScreen (logo AgroPet + verificação de sessão)
        │
        ├─ Sem sessão ──▶ AuthStack
-       │                   ├── ClientLoginScreen ◄──── tela principal
-       │                   │     ├── [link] → RegisterScreen
-       │                   │     └── [link] → AdminLoginScreen
-       │                   ├── AdminLoginScreen
-       │                   │     ├── Login + Biometria → AdminDrawer
-       │                   │     └── [link] → voltar ClientLoginScreen
+       │                   ├── ClientLoginScreen
+       │                   │     └── [link] → RegisterScreen
        │                   └── RegisterScreen
        │                         └── Cadastro → ClientTabs
        │
-       └─ Com sessão válida
+       └─ Com sessão de "client"
             │
-            ├─ role: "client" ──▶ ClientTabs (Bottom Tabs)
-            │    ├── 🏠 Home (Catálogo)
-            │    │     └── ProductDetailScreen → [Adicionar ao carrinho]
-            │    ├── 🛒 Carrinho
-            │    │     └── PaymentScreen (Pagamento + Frete)
-            │    │           ├── PIX → PaymentConfirmScreen (QR Code + Copia e Cola)
-            │    │           ├── Dinheiro → PaymentConfirmScreen (sem QR)
-            │    │           └── Cartão → PaymentConfirmScreen (sem QR)
-            │    ├── 🗺️ Mapa (loja, concorrentes, acompanhar entrega)
-            │    └── 👤 Perfil
-            │          ├── OrderHistoryScreen (Histórico de Pedidos)
-            │          │     └── OrderTrackingScreen (Acompanhar Pedido — timeline + detalhes)
-            │          └── SettingsScreen (Configurações)
-            │                ├── Tema claro/escuro
-            │                ├── Endereço padrão
-            │                ├── Notificações
-            │                └── Logout
+            └─▶ ClientTabs (Bottom Tabs)
+                 ├── 🏠 Home (Catálogo)
+                 │     └── ProductDetailScreen → [Adicionar ao carrinho]
+                 ├── 🛒 Carrinho
+                 │     └── PaymentScreen (Pagamento + Frete)
+                 │           ├── PIX → PaymentConfirmScreen (Instruções)
+                 │           ├── Dinheiro → PaymentConfirmScreen (Instruções)
+                 │           └── Cartão → PaymentConfirmScreen (Instruções)
+                 ├── 🗺️ Mapa (loja, concorrentes, acompanhar entrega)
+                 └── 👤 Perfil
+                       ├── OrderHistoryScreen (Histórico de Pedidos)
+                       │     └── OrderTrackingScreen (Acompanhar Pedido)
+                       └── SettingsScreen (Configurações)
+                             ├── Tema, Endereço e Logout
+
+```
+
+### APP 2: AgroPet Admin
+```text
+App Start
+  │
+  └─▶ SplashScreen (opcional)
+       │
+       ├─ Sem sessão ──▶ AdminLoginScreen (Acesso exclusivo)
+       │
+       └─ Com sessão de "admin"
             │
-            └─ role: "admin" ──▶ AdminDrawer
-                 ├── 📋 Pedidos (gerenciar status)
-                 ├── 📊 Painel de Vendas (Dashboard)
-                 ├── 💰 Histórico de Vendas / Caixa (dia/semana/mês)
-                 ├── 📦 Gerenciar Produtos (CRUD + ativar/desativar)
-                 ├── 🗺️ Mapa (entregas em andamento, concorrentes)
-                 ├── 👤 Perfil (Admin)
-                 └── ⚙️ Configurações (Admin)
-                       ├── Tema claro/escuro
-                       ├── Chave PIX
-                       ├── Raio de entrega / Horário
-                       ├── Gerenciar Categorias
-                       ├── Modo Offline (status, forçar sync)
-                       └── Logout
+            └─▶ AdminDrawer (A partir do Menu Inicial de Hub)
+                 ├── 📋 Tela Ver Pedidos (gerenciar status)
+                 ├── 💰 Histórico de Vendas
+                 ├── 📦 Editar Produto Tela (Listagem)
+                 │     ├── Registrar Produto
+                 │     └── Editar Produto
+                 ├── 🗺️ Maps (entregas, concorrentes)
+                 ├── 👤 Perfil Adm
+                 └── ⚙️ Configurações
+                       ├── Tema, Raio, Logout
 ```
 
 ## Geolocalização — Regra de Entrega
@@ -328,36 +220,17 @@ App Start
 
 ## Formas de Pagamento
 
-| Método | Comportamento | QR Code? |
+| Método | Comportamento | Onde será pago |
 |--------|--------------|----------|
-| **PIX** | Gera QR Code EMV + Código Copia e Cola | ✅ Sim |
-| **Dinheiro** | Registra intenção, pagamento na entrega/retirada | ❌ Não |
-| **Cartão Crédito** | Registra intenção, pagamento na maquininha | ❌ Não |
-| **Cartão Débito** | Registra intenção, pagamento na maquininha | ❌ Não |
+| **PIX** | Cliente indica interesse. Pagamento via chave enviada ou QR impresso pelo motoboy. | Na entrega/retirada |
+| **Dinheiro** | Registra intenção, informa troco se aplicável. | Na entrega/retirada |
+| **Cartão Crédito** | Registra intenção. | Na entrega (na maquininha) |
+| **Cartão Débito** | Registra intenção. | Na entrega (na maquininha) |
 
-## PIX QR Code
-
-- Padrão: **EMV/BRCode** (BR Code conforme BACEN)
-- Chave PIX configurável pelo admin (via Configurações)
-- Payload inclui: chave, nome recebedor, cidade (Lambari), valor, txid
-- QR Code exibido na tela de confirmação + código Copia e Cola abaixo
-- Botão "Copiar Código PIX" copia o payload para a área de transferência
-- Biblioteca sugerida: `react-native-pix` ou geração manual do payload EMV
-
-## Autenticação
-
-### Login do Cliente (tela separada)
-- Login com email + senha via Supabase Auth
-- Se `role === "client"` → redireciona para ClientTabs
-- Se `role === "admin"` → redireciona para tela de login admin (solicita biometria)
-
-### Login do Admin (tela separada)
-- Login com email + senha via Supabase Auth
-- Após login, se `role === "admin"`:
-  - Solicita biometria via `expo-local-authentication`
-  - Face ID / fingerprint / face unlock do dispositivo
-  - Se biometria falhar → não libera acesso admin
-  - Se dispositivo sem biometria → fallback para PIN/senha adicional
+### Autenticação Dividida
+Como temos 2 aplicativos físicos:
+- **AgroPet Cliente:** Faz o login via Supabase. O banco de dados valida se a conta é do role `client`. Se um `admin` tentar acessar pelo app de cliente, ele será negado na própria API ou terá uma visão limpa de consumidor sem que as lógicas de admin estejam sequer no APK.
+- **AgroPet Admin:** App exclusivo. A tela principal é sempre o *Login Adm*. O usuário preenche credenciais e a aplicação abre o Drawer Hub. Ninguém pode forçar a abertura de uma tela cliente por lá. Nenhuma biometria secundária é usada.
 
 ## Tema Claro/Escuro
 
